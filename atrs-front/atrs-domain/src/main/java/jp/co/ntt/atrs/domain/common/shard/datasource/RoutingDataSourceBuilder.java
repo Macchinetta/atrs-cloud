@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.terasoluna.gfw.common.exception.SystemException;
 
+import jp.co.ntt.atrs.domain.common.constants.ShardConstants;
 import jp.co.ntt.atrs.domain.common.logging.LogMessages;
-import jp.co.ntt.atrs.domain.common.shard.ShardKeyResolver;
 import jp.co.ntt.atrs.domain.common.shard.datasource.model.CommonDatabaseProperties;
 import jp.co.ntt.atrs.domain.common.shard.datasource.model.DatabaseProperties;
 
@@ -112,7 +112,7 @@ public class RoutingDataSourceBuilder implements InitializingBean {
         for (Map<String, String> dataSourceProperties : dataSources) {
             // データソースキー
             String sourceKey = dataSourceProperties.get(
-                    ShardKeyResolver.SCHEMA_KEY_NAME);
+                    ShardConstants.SCHEMA_KEY_NAME);
             try {
                 // データソースを作成
                 javax.sql.DataSource source = dataSourceFactory.create(

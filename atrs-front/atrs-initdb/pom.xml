@@ -6,7 +6,7 @@
     <parent>
         <groupId>jp.co.ntt.atrs.cloud.aws</groupId>
         <artifactId>atrs-front</artifactId>
-        <version>1.1.1.RELEASE</version>
+        <version>1.2.0.RELEASE</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -25,7 +25,7 @@
         <shard.db.group.id>org.postgresql</shard.db.group.id>
         <shard.db.artifactId>postgresql</shard.db.artifactId>
         <shard.db.data.source.keys>atrs1,atrs2</shard.db.data.source.keys>
-        <dynamo.db.tablename>ShardAccount</dynamo.db.tablename>
+        <dynamo.db.tablename>AtrsShardAccount</dynamo.db.tablename>
         <dynamo.db.tableidname>user_id</dynamo.db.tableidname>
         <dynamo.db.tablevaluename>data_source_key</dynamo.db.tablevaluename>
         <project.root.basedir>${project.parent.basedir}/..</project.root.basedir>
@@ -130,7 +130,7 @@
             <id>ci</id>
             <properties>
                 <db.encoding>UTF8</db.encoding>
-                <db.url>jdbc:postgresql://atrs-ci-shard-1-1-x.xxxxxxxxxxxx.ap-northeast-1.rds.amazonaws.com:5432/atrs</db.url>
+                <db.url>jdbc:postgresql://atrs-master-12x.xxxxxxxxxxxx.ap-northeast-1.rds.amazonaws.com:5432/atrs</db.url>
                 <db.username>atrsuser</db.username>
                 <db.password>atrsuser</db.password>
                 <db.basedir>${shard.integration.base.dir}</db.basedir>
@@ -139,14 +139,14 @@
                 <db.artifactId>${shard.db.artifactId}</db.artifactId>
                 <db.version>${postgresql.version}</db.version>
                 <dynamo.db.region>ap-northeast-2</dynamo.db.region>
-                <redis.cluster.nodes>atrs-ci.xxxxxx.clustercfg.apne1.cache.amazonaws.com:6379,atrs-ci-cache.xxxxxx.clustercfg.apne1.cache.amazonaws.com:6379</redis.cluster.nodes>
+                <redis.cluster.nodes>atrs-session-12x.xxxxxx.clustercfg.apne1.cache.amazonaws.com:6379,atrs-dbcache-12x.s9bix8.clustercfg.apne1.cache.amazonaws.com:6379</redis.cluster.nodes>
             </properties>
         </profile>
         <profile>
             <id>ci1</id>
             <properties>
                 <db.encoding>UTF8</db.encoding>
-                <db.url>jdbc:postgresql://atrs-ci-shard1-1-1-x.xxxxxxxxxxxx.ap-northeast-1.rds.amazonaws.com:5432/atrs</db.url>
+                <db.url>jdbc:postgresql://atrs-shard1-12x.xxxxxxxxxxxx.ap-northeast-1.rds.amazonaws.com:5432/atrs</db.url>
                 <db.username>atrsuser</db.username>
                 <db.password>atrsuser</db.password>
                 <db.basedir>${shard.integration.base.dir1}</db.basedir>
@@ -160,7 +160,7 @@
             <id>ci2</id>
             <properties>
                 <db.encoding>UTF8</db.encoding>
-                <db.url>jdbc:postgresql://atrs-ci-shard2-1-1-x.xxxxxxxxxxxx.ap-northeast-1.rds.amazonaws.com:5432/atrs</db.url>
+                <db.url>jdbc:postgresql://atrs-shard2-12x.xxxxxxxxxxxx.ap-northeast-1.rds.amazonaws.com:5432/atrs</db.url>
                 <db.username>atrsuser</db.username>
                 <db.password>atrsuser</db.password>
                 <db.basedir>${shard.integration.base.dir2}</db.basedir>

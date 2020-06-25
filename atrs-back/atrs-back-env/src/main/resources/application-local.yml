@@ -48,7 +48,7 @@ reservation:
     queue: RESERVATION_NOTICE
     concurrency: 5-10
     mail:
-      from: xx@xx.xx.xx.xx
+      from: terasoluna-cloud@kits.nttdata.co.jp
       templateFile: reservation-mail.ftl
 
 # Logging

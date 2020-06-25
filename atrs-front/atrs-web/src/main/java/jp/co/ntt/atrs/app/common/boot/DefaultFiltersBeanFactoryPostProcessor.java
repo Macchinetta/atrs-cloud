@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,10 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 
-// FIXME Filter型のBeanが二重にサーブレットコンテナに登録されてしまう問題への暫定対処
-// ( issue : http://stackoverflow.com/questions/28421966/prevent-spring-boot-from-registering-a-servlet-filter ) 
+/**
+ * フィルタの自動登録制御。
+ * @author NTT 電電太郎
+ */
 public class DefaultFiltersBeanFactoryPostProcessor implements
                                                     BeanFactoryPostProcessor {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class AccountShardInterceptor implements MethodInterceptor,
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-
+        // 未使用のデフォルトの実装
     }
 
     /*
@@ -89,7 +89,7 @@ public class AccountShardInterceptor implements MethodInterceptor,
             // リポジトリ問い合わせ
             Optional<ShardingAccount> shardingAccount = accountShardKeyRepository
                     .findById(account);
-            if (shardingAccount != null) {
+            if (shardingAccount.isPresent()) {
                 // データソースキー取得
                 dataSourceKey = shardingAccount.get().getDataSourceKey();
             }

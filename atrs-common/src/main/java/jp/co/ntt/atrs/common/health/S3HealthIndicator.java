@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
  */
 package jp.co.ntt.atrs.common.health;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,8 +36,8 @@ import com.amazonaws.services.s3.AmazonS3URI;
 @ConfigurationProperties(prefix = "management.health.s3")
 public class S3HealthIndicator extends AbstractHealthIndicator {
 
-    @Autowired(required = false)
-    AmazonS3 amazonS3;
+    @Inject
+    Optional<AmazonS3> amazonS3;
 
     private String uri;
 
@@ -53,7 +56,7 @@ public class S3HealthIndicator extends AbstractHealthIndicator {
         try {
             String bucket = new AmazonS3URI(uri).getBucket();
             builder.up().withDetail("uri", uri).withDetail("location", amazonS3
-                    .getBucketLocation(bucket));
+                    .get().getBucketLocation(bucket));
         } catch (Exception e) {
             builder.down(e);
         }

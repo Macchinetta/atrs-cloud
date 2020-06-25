@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package jp.co.ntt.atrs.app.a0;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * インデックスアクセスを制御するコントローラ。
@@ -30,7 +30,7 @@ public class IndexController {
      * トップ画面を表示する。
      * @return View論理名
      */
-    @RequestMapping(value = "/")
+    @GetMapping("/")
     public String homePage() {
         return "redirect:/Ticket/search?topForm";
     }

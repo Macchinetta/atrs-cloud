@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>jp.co.ntt.atrs.cloud.aws</groupId>
     <artifactId>atrs-parent</artifactId>
-    <version>1.1.1.RELEASE</version>
+    <version>1.2.0.RELEASE</version>
     <packaging>pom</packaging>
     <modules>
         <module>/atrs-common</module>
@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.terasoluna.gfw</groupId>
         <artifactId>terasoluna-gfw-parent</artifactId>
-        <version>5.5.1.RELEASE</version>
+        <version>5.6.0.RC4</version>
         <relativePath />
     </parent>
     <name>AIRLINE TICKET RESERVATION SYSTEM Parent POM</name>
@@ -248,13 +248,6 @@
                 <version>${com.amazonaws.amazon-sqs-java-messaging-lib.version}</version>
             </dependency>
             <!-- == End AmazonAWS == -->
-            <!-- == Begin DynamoDB == -->
-            <dependency>
-                <groupId>com.github.derjust</groupId>
-                <artifactId>spring-data-dynamodb</artifactId>
-                <version>${org.springframework.data.dynamodb-dependencies.version}</version>
-            </dependency>
-            <!-- == End DynamoDB == -->
             <!-- == Begin Jms == -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -285,22 +278,21 @@
         <org.apache.maven.plugins.maven-war-plugin.version>2.2</org.apache.maven.plugins.maven-war-plugin.version>
         <org.apache.maven.plugins.maven-failsafe-plugin.version>2.19</org.apache.maven.plugins.maven-failsafe-plugin.version>
         <org.apache.maven.plugins.version>2.5</org.apache.maven.plugins.version>
-        <org.apache.maven.plugins.maven-surefire-plugin.version>2.20</org.apache.maven.plugins.maven-surefire-plugin.version>
+        <org.apache.maven.plugins.maven-surefire-plugin.version>2.22.2</org.apache.maven.plugins.maven-surefire-plugin.version>
         <formatter-maven-plugin.version>0.5.2</formatter-maven-plugin.version>
         <com.google.code.maven-license-plugin.version>1.4.0</com.google.code.maven-license-plugin.version>
         <org.codehaus.mojo.version>2.5</org.codehaus.mojo.version>
         <org.codehaus.mojo.build-helper-maven-plugin.version>1.9.1</org.codehaus.mojo.build-helper-maven-plugin.version>
         <!-- == Dependency Versions == -->
-        <postgresql.version>42.2.4</postgresql.version>
-        <org.springframework.cloud.spring-cloud-dependencies.version>Greenwich.RELEASE</org.springframework.cloud.spring-cloud-dependencies.version>
-        <org.springframework.spring-jms.version>4.3.21.RELEASE</org.springframework.spring-jms.version>
-        <com.amazonaws.amazon-sqs-java-messaging-lib.version>1.0.4</com.amazonaws.amazon-sqs-java-messaging-lib.version>
-        <org.springframework.data.dynamodb-dependencies.version>5.0.4</org.springframework.data.dynamodb-dependencies.version>
+        <postgresql.version>42.2.9</postgresql.version>
+        <org.springframework.cloud.spring-cloud-dependencies.version>Hoxton.SR3</org.springframework.cloud.spring-cloud-dependencies.version>
+        <org.springframework.spring-jms.version>4.3.25.RELEASE</org.springframework.spring-jms.version>
+        <com.amazonaws.amazon-sqs-java-messaging-lib.version>1.0.8</com.amazonaws.amazon-sqs-java-messaging-lib.version>
         <jaxb-core.version>2.3.0.1</jaxb-core.version>
         <jaxb-impl.version>2.3.2</jaxb-impl.version>
         <!-- == Project Properties == -->
         <encoding>UTF-8</encoding>
-        <java-version>1.8</java-version>
+        <java-version>11</java-version>
         <project.root.basedir>${project.basedir}</project.root.basedir>
         <!-- デフォルトではテストはスキップする。実行する場合、引数に[-DskipTests=false]を付与する -->
         <skipTests>true</skipTests>

@@ -47,10 +47,6 @@
                     </bean>
                     <bean
                         class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
-                        <property name="name" value="shardids" />
-                    </bean>
-                    <bean
-                        class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
                         <property name="name" value="boardingClass" />
                     </bean>
                     <bean

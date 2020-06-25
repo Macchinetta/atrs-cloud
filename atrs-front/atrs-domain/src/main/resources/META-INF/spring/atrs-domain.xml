@@ -49,7 +49,7 @@
     </bean>
 
     <bean id="accountShardKeyRepository"
-        class="jp.co.ntt.atrs.domain.common.shard.repository.AccountShardKeyRepository" />
+        class="jp.co.ntt.atrs.domain.common.shard.repository.AccountShardKeyRepositoryImpl" />
 
     <bean id="dataSourceFactory"
         class="jp.co.ntt.atrs.domain.common.shard.datasource.pool.AmazonRdsReadReplicaTomcatDataSourceFactory" />
@@ -98,10 +98,6 @@
         class="jp.co.ntt.atrs.domain.common.dynamodb.DynamoDBClientFactory" factory-method="create">
         <constructor-arg index ="0" value="${cloud.aws.dynamodb.region}" />
     </bean>
-
-    <dynamodb:repositories
-        base-package="jp.co.ntt.atrs.domain.common.shard.repository"
-        amazon-dynamodb-ref="amazonDynamoDB" />
 
     <bean id="messageSender" class="jp.co.ntt.atrs.domain.common.messaging.MessageSender" />
 

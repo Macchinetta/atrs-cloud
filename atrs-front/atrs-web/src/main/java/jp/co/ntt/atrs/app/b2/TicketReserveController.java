@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,9 @@
  */
 package jp.co.ntt.atrs.app.b2;
 
-import jp.co.ntt.atrs.app.b0.SelectFlightDto;
-import jp.co.ntt.atrs.app.b0.TicketHelper;
-import jp.co.ntt.atrs.app.common.exception.BadRequestException;
-import jp.co.ntt.atrs.domain.model.Flight;
-import jp.co.ntt.atrs.domain.service.a1.AtrsUserDetails;
-import jp.co.ntt.atrs.domain.service.b2.TicketReserveErrorCode;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -39,8 +36,12 @@ import org.terasoluna.gfw.common.message.ResultMessages;
 import org.terasoluna.gfw.web.token.transaction.TransactionTokenCheck;
 import org.terasoluna.gfw.web.token.transaction.TransactionTokenType;
 
-import java.util.List;
-import javax.inject.Inject;
+import jp.co.ntt.atrs.app.b0.SelectFlightDto;
+import jp.co.ntt.atrs.app.b0.TicketHelper;
+import jp.co.ntt.atrs.app.common.exception.BadRequestException;
+import jp.co.ntt.atrs.domain.model.Flight;
+import jp.co.ntt.atrs.domain.service.a1.AtrsUserDetails;
+import jp.co.ntt.atrs.domain.service.b2.TicketReserveErrorCode;
 
 /**
  * チケット予約コントローラ。
@@ -50,6 +51,11 @@ import javax.inject.Inject;
 @RequestMapping("Ticket/reserve")
 @TransactionTokenCheck("Ticket/reserve")
 public class TicketReserveController {
+
+    /**
+     * 選択フライト情報DTOリスト
+     */
+    private static final String SELECT_FLIGHT_DTO_LIST = "selectFlightDtoList";
 
     /**
      * チケット予約共通Helper。
@@ -152,7 +158,7 @@ public class TicketReserveController {
         ticketReserveHelper.prepareReservationForm(ticketReserveForm
                 .getReservationForm(), userDetails);
 
-        model.addAttribute("selectFlightDtoList", ticketReserveHelper
+        model.addAttribute(SELECT_FLIGHT_DTO_LIST, ticketReserveHelper
                 .createSelectFlightDtoList(flightList));
 
         return "B2/reserveForm";
@@ -175,7 +181,7 @@ public class TicketReserveController {
         ticketReserveHelper.prepareReservationForm(ticketReserveForm
                 .getReservationForm(), userDetails);
 
-        model.addAttribute("selectFlightDtoList", ticketReserveHelper
+        model.addAttribute(SELECT_FLIGHT_DTO_LIST, ticketReserveHelper
                 .createSelectFlightDtoList(flightList));
 
         return "B2/reserveForm";
@@ -295,7 +301,7 @@ public class TicketReserveController {
     private String createReserveFailMessage(ResultMessages messages,
             List<Flight> flightList, Model model) {
         model.addAttribute(messages);
-        model.addAttribute("selectFlightDtoList", ticketReserveHelper
+        model.addAttribute(SELECT_FLIGHT_DTO_LIST, ticketReserveHelper
                 .createSelectFlightDtoList(flightList));
         return "B2/reserveFail";
     }

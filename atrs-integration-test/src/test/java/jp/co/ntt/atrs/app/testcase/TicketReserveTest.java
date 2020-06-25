@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,133 +30,154 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import jp.co.ntt.atrs.app.bean.PublicCustomerBean;
-import jp.co.ntt.atrs.app.page.ReserveCompletePage;
 import jp.co.ntt.atrs.app.page.FlightSearchResultPage;
+import jp.co.ntt.atrs.app.page.ReserveCompletePage;
 import jp.co.ntt.atrs.app.page.TopPage;
 import jp.co.ntt.atrs.domain.model.Gender;
-import junit.framework.TestCase;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-        "classpath:META-INF/spring/seleniumContext.xml" })
-public class TicketReserveTest extends TestCase {
+"classpath:META-INF/spring/seleniumContext.xml" })
+public class TicketReserveTest {
 
-    @Value("${target.applicationContextUrl}")
-    private String applicationContextUrl;
+	@Value("${target.applicationContextUrl}")
+	private String applicationContextUrl;
 
-    @Value("${testdata.path}")
-    private String testdataPath;
+	@Value("${testdata.path}")
+	private String testdataPath;
 
-    @Value("${target.geckodriverVersion}")
-    private String geckodriverVersion;
+	@Value("${target.geckodriverVersion}")
+	private String geckodriverVersion;
 
-    @Before
-    public void setUp() {
+	@Before
+	public void setUp() {
 
-        // 生成するドライバのインスタンスを取得
-        if (System.getProperty("webdriver.gecko.driver") == null) {
-            WebDriverManager.firefoxdriver().version(geckodriverVersion)
-                    .setup();
-        }
-    }
+		// 生成するドライバのインスタンスを取得
+		if (System.getProperty("webdriver.gecko.driver") == null) {
+			WebDriverManager.firefoxdriver().version(geckodriverVersion)
+			.setup();
+		}
+	}
 
-    @After
-    public void tearDown() {
+	@After
+	public void tearDown() {
 
-        // ログイン状態の場合ログアウトする
-        TopPage topPage = open(applicationContextUrl, TopPage.class);
-        if (topPage.isLoggedIn()) {
-            topPage.logout();
-        }
-    }
+		for (int retryCount = 0; retryCount < 100; retryCount++) {
+			try {
+				// ログイン状態の場合ログアウトする
+				TopPage topPage = open(applicationContextUrl, TopPage.class);
+				if (topPage.isLoggedIn()) {
+					topPage.logout();
+				}
+				break;
+			} catch (Exception e) {
+				// エラー時はリトライ
+			}
+		}
+	}
 
-    /**
-     * 会員ユーザでフライト予約ができることを確認する。
-     */
-    @Test
-    public void reserveRoundTripTicketByMemberTest() {
+	/**
+	 * 会員ユーザでフライト予約ができることを確認する。
+	 */
+	@Test
+	public void reserveRoundTripTicketByMemberTest() {
 
-        // 事前準備:ページオブジェクトを生成する。
-        TopPage topPage;
-        FlightSearchResultPage flightSearchResultPage;
-        ReserveCompletePage reserveCompletePage;
+		// 事前準備:ページオブジェクトを生成する。
+		TopPage topPage;
+		FlightSearchResultPage flightSearchResultPage;
+		ReserveCompletePage reserveCompletePage;
 
-        // テスト実行:ログインしてフライト予約を行う。
-        topPage = open(applicationContextUrl, TopPage.class).login("0000000001",
-                "aaaaa11111");
+		for (int retryCount = 0; retryCount < 100; retryCount++) {
+			try {
+				// テスト実行:ログインしてフライト予約を行う。
+				topPage = open(applicationContextUrl, TopPage.class).login("0000000001",
+						"aaaaa11111");
 
-        // サスペンド:ログインしていることを確認する。
-        topPage.getHeaderContent().shouldHave(text("ログアウト"));
-        flightSearchResultPage = topPage.searchFlight("大阪(伊丹)")
-                .selectRoundTripFlightOutward()
-                .toHomewardFrightSearchResultPage();
+				// サスペンド:ログインしていることを確認する。
+				topPage.getHeaderContent().shouldHave(text("ログアウト"));
+				flightSearchResultPage = topPage.searchFlight("大阪(伊丹)")
+						.selectRoundTripFlightOutward()
+						.toHomewardFrightSearchResultPage();
 
-        // フライト情報から基準日を取得する。
-        String depDateTD = flightSearchResultPage.getDepDateTd().getText()
-                .replace(" ", "");
+				// フライト情報から基準日を取得する。
+				String depDateTD = flightSearchResultPage.getDepDateTd().getText()
+						.replace(" ", "");
 
-        flightSearchResultPage.moveToNextDay();
+				flightSearchResultPage.moveToNextDay();
 
-        // サスペンド:日付が変更されていることを確認する。
-        flightSearchResultPage.getDepDateTd().shouldNotHave(text(depDateTD));
-        reserveCompletePage = flightSearchResultPage
-                .selectRoundTripFlightHomeward().toFlightReserveFormPageAsUser()
-                .toFlightReserveConfirmPage().toFlightReserveCompletePage();
+				// サスペンド:日付が変更されていることを確認する。
+				flightSearchResultPage.getDepDateTd().shouldNotHave(text(depDateTD));
+				reserveCompletePage = flightSearchResultPage
+						.selectRoundTripFlightHomeward().toFlightReserveFormPageAsUser()
+						.toFlightReserveConfirmPage().toFlightReserveCompletePage();
 
-        // 証跡の取得
-        screenshot("reserveRoundTripTicketByMemberTest");
+				// 証跡の取得
+				screenshot("reserveRoundTripTicketByMemberTest");
 
-        // アサート:予約フライト情報にヘッダ、往路、復路の3行が存在することを確認する。
-        reserveCompletePage.getReserveflightlist().shouldHaveSize(3);
-    }
+				// アサート:予約フライト情報にヘッダ、往路、復路の3行が存在することを確認する。
+				reserveCompletePage.getReserveflightlist().shouldHaveSize(3);
 
-    /**
-     * 非会員ユーザでフライト予約ができることを確認する。
-     */
-    @Test
-    public void reserveRoundTripTicketByThePublicTest() {
+				break;
+			} catch (Exception e) {
+				// エラー時はリトライ
+			}
+		}
 
-        // 事前準備:ページオブジェクトを生成する。
-        FlightSearchResultPage flightSearchResultPage;
-        ReserveCompletePage ReserveCompletePage;
+	}
 
-        // 代表者と同乗者の情報を設定する。
-        PublicCustomerBean customer = new PublicCustomerBean();
-        customer.setKanaFamilyName("デンデン");
-        customer.setKanaGivenName("ハナコ");
-        customer.setAge("45");
-        customer.setGender(Gender.F);
-        customer.setTel1("050");
-        customer.setTel2("9999");
-        customer.setTel3("9999");
-        customer.setMail("success@simulator.amazonses.com");
-        customer.setKanaFamilyName2("デンデン");
-        customer.setKanaGivenName2("タロウ");
-        customer.setAge2("50");
-        customer.setGender2(Gender.M);
+	/**
+	 * 非会員ユーザでフライト予約ができることを確認する。
+	 */
+	@Test
+	public void reserveRoundTripTicketByThePublicTest() {
 
-        // テスト実行:ログインせずにフライト予約を行う。
-        flightSearchResultPage = open(applicationContextUrl, TopPage.class)
-                .searchFlight("大阪(伊丹)").selectRoundTripFlightOutward()
-                .toHomewardFrightSearchResultPage();
+		// 事前準備:ページオブジェクトを生成する。
+		FlightSearchResultPage flightSearchResultPage;
+		ReserveCompletePage ReserveCompletePage;
 
-        // フライト情報から基準日を取得する。
-        String depDateTD = flightSearchResultPage.getDepDateTd().getText()
-                .replace(" ", "");
+		// 代表者と同乗者の情報を設定する。
+		PublicCustomerBean customer = new PublicCustomerBean();
+		customer.setKanaFamilyName("デンデン");
+		customer.setKanaGivenName("ハナコ");
+		customer.setAge("45");
+		customer.setGender(Gender.F);
+		customer.setTel1("050");
+		customer.setTel2("9999");
+		customer.setTel3("9999");
+		customer.setMail("success@simulator.amazonses.com");
+		customer.setKanaFamilyName2("デンデン");
+		customer.setKanaGivenName2("タロウ");
+		customer.setAge2("50");
+		customer.setGender2(Gender.M);
 
-        flightSearchResultPage.moveToNextDay();
+		for (int retryCount = 0; retryCount < 100; retryCount++) {
+			try {
+				// テスト実行:ログインせずにフライト予約を行う。
+				flightSearchResultPage = open(applicationContextUrl, TopPage.class)
+						.searchFlight("大阪(伊丹)").selectRoundTripFlightOutward()
+						.toHomewardFrightSearchResultPage();
 
-        // サスペンド:日付が変更されていることを確認する。
-        flightSearchResultPage.getDepDateTd().shouldNotHave(text(depDateTD));
-        ReserveCompletePage = flightSearchResultPage
-                .selectRoundTripFlightHomeward()
-                .toFlightReserveFormPageAsThePublic().setCustomerInfo(customer)
-                .toFlightReserveConfirmPage().toFlightReserveCompletePage();
+				// フライト情報から基準日を取得する。
+				String depDateTD = flightSearchResultPage.getDepDateTd().getText()
+						.replace(" ", "");
 
-        // 証跡の取得
-        screenshot("reserveRoundTripTicketByThePublicTest");
+				flightSearchResultPage.moveToNextDay();
 
-        // アサート:予約フライト情報にヘッダ、往路、復路の3行が存在することを確認する。
-        ReserveCompletePage.getReserveflightlist().shouldHaveSize(3);
-    }
+				// サスペンド:日付が変更されていることを確認する。
+				flightSearchResultPage.getDepDateTd().shouldNotHave(text(depDateTD));
+				ReserveCompletePage = flightSearchResultPage
+						.selectRoundTripFlightHomeward()
+						.toFlightReserveFormPageAsThePublic().setCustomerInfo(customer)
+						.toFlightReserveConfirmPage().toFlightReserveCompletePage();
+				// 証跡の取得
+				screenshot("reserveRoundTripTicketByThePublicTest");
+
+				// アサート:予約フライト情報にヘッダ、往路、復路の3行が存在することを確認する。
+				ReserveCompletePage.getReserveflightlist().shouldHaveSize(3);
+				break;
+			} catch (Exception e) {
+				// エラー時はリトライ
+			}
+		}
+	}
 }

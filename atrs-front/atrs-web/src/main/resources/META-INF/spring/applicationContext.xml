@@ -15,14 +15,10 @@
 
 
     <context:annotation-config />
-    <bean
-        class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration" />
 
     <bean
         class="org.terasoluna.gfw.web.logging.HttpSessionEventLoggingListener" />
 
-    <util:constant
-        static-field="org.springframework.session.data.redis.config.ConfigureRedisAction.NO_OP" />
     <bean id="exceptionLogger" class="org.terasoluna.gfw.common.exception.ExceptionLogger">
         <property name="exceptionCodeResolver" ref="exceptionCodeResolver" />
     </bean>

@@ -7,6 +7,8 @@ spring:
     name: atrs
   session:
     store-type: redis
+    redis:
+      configure-action: NONE
 
 # codelist
 cron:

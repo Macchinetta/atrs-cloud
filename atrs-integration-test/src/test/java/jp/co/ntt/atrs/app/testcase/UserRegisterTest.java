@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,10 +90,17 @@ public class UserRegisterTest {
     @After
     public void tearDown() {
 
-        // ログイン状態の場合ログアウトする
-        TopPage topPage = open(applicationContextUrl, TopPage.class);
-        if (topPage.isLoggedIn()) {
-            topPage.logout();
+        for (int retryCount = 0; retryCount < 100; retryCount++) {
+            try {
+                // ログイン状態の場合ログアウトする
+                TopPage topPage = open(applicationContextUrl, TopPage.class);
+                if (topPage.isLoggedIn()) {
+                    topPage.logout();
+                }
+                break;
+            } catch (Exception e) {
+                // エラー時はリトライ
+            }
         }
     }
 
@@ -103,74 +110,82 @@ public class UserRegisterTest {
     @Test
     public void registerAndUpdateUserTest() {
 
-        // 事前準備:ページオブジェクトを生成する。
-        TopPage topPage;
-        MemberRegisterConfirmPage memberRegisterConfirmPage;
-        MemberDetailPage memberDetailPage;
-        MemberRegisterCompletePage memberRegisterCompletePage;
+    	// 事前準備:ページオブジェクトを生成する。
+    	TopPage topPage;
+    	MemberRegisterConfirmPage memberRegisterConfirmPage;
+    	MemberDetailPage memberDetailPage;
+    	MemberRegisterCompletePage memberRegisterCompletePage;
 
-        // ユーザ情報に必要な画像ファイルのパスを設定する。
-        String imgPathW = testdataPath + "white.jpg";
-        String imgPathB = testdataPath + "black.jpg";
+    	// ユーザ情報に必要な画像ファイルのパスを設定する。
+    	String imgPathW = testdataPath + "white.jpg";
+    	String imgPathB = testdataPath + "black.jpg";
 
-        // テスト実行:ユーザ情報登録を行う。
-        memberRegisterConfirmPage = open(applicationContextUrl, TopPage.class)
-                .toUserRegisterPage().setMemberInfo(member, imgPathW)
-                .toRegisterConfirmPage();
+    	for (int retryCount = 0; retryCount < 100; retryCount++) {
+    		try {
+    			// テスト実行:ユーザ情報登録を行う。
+    			memberRegisterConfirmPage = open(applicationContextUrl, TopPage.class)
+    					.toUserRegisterPage().setMemberInfo(member, imgPathW)
+    					.toRegisterConfirmPage();
 
-        // サスペンド:登録ボタンが表示されていることを確認する。
-        memberRegisterConfirmPage.getForward().shouldHave(text("登録"));
-        memberRegisterCompletePage = memberRegisterConfirmPage.registerUser();
+    			// サスペンド:登録ボタンが表示されていることを確認する。
+    			memberRegisterConfirmPage.getForward().shouldHave(text("登録"));
+    			memberRegisterCompletePage = memberRegisterConfirmPage.registerUser();
 
-        // 証跡の取得
-        screenshot("registerAndUpdateUserTest_Registered");
+    			// 証跡の取得
+    			screenshot("registerAndUpdateUserTest_Registered");
 
-        // アサート:ユーザ情報登録が完了したことを確認する。
-        memberRegisterCompletePage.getContent().shouldHave(text("登録完了"));
+    			// アサート:ユーザ情報登録が完了したことを確認する。
+    			memberRegisterCompletePage.getContent().shouldHave(text("登録完了"));
 
-        // ユーザ情報登録完了ページから登録したユーザIDを取得する。
-        String[] resultMsg = memberRegisterCompletePage.getGuide().getText()
-                .split(" ", 0);
-        member.setUserId(resultMsg[7]);
+    			// ユーザ情報登録完了ページから登録したユーザIDを取得する。
+    			String[] resultMsg = memberRegisterCompletePage.getGuide().getText()
+    					.split(" ", 0);
+    			member.setUserId(resultMsg[7]);
 
-        // 変更前の電話番号を取得する。
-        String oldTel = member.getTel1() + "-" + member.getTel2() + "-" + member
-                .getTel3();
+    			// 変更前の電話番号を取得する。
+    			String oldTel = member.getTel1() + "-" + member.getTel2() + "-" + member
+    					.getTel3();
 
-        // 変更するユーザ情報を設定する。
-        member.setTel1("070");
-        member.setTel2("1234");
-        member.setTel3("5678");
+    			// 変更するユーザ情報を設定する。
+    			member.setTel1("070");
+    			member.setTel2("1234");
+    			member.setTel3("5678");
 
-        // 変更後の電話番号を取得する。
-        String newTel = member.getTel1() + "-" + member.getTel2() + "-" + member
-                .getTel3();
+    			// 変更後の電話番号を取得する。
+    			String newTel = member.getTel1() + "-" + member.getTel2() + "-" + member
+    					.getTel3();
 
-        // テスト実行:ユーザ情報変更を行う。
-        topPage = open(applicationContextUrl, TopPage.class).login(member
-                .getUserId(), member.getPassword());
+    			// テスト実行:ユーザ情報変更を行う。
+    			topPage = open(applicationContextUrl, TopPage.class).login(member
+    					.getUserId(), member.getPassword());
 
-        // サスペンド:ログインしていることを確認する。
-        topPage.getHeaderContent().shouldHave(text("ログアウト"));
-        memberDetailPage = topPage.toUserDetailPage();
+    			// サスペンド:ログインしていることを確認する。
+    			topPage.getHeaderContent().shouldHave(text("ログアウト"));
+    			memberDetailPage = topPage.toUserDetailPage();
 
-        // ユーザ情報更新前の証跡の取得
-        screenshot("registerAndUpdateUserTest_beforeUpdate");
+    			// ユーザ情報更新前の証跡の取得
+    			screenshot("registerAndUpdateUserTest_beforeUpdate");
 
-        // 更新
-        memberDetailPage = memberDetailPage.toUserUpdatePage().setMemberInfo(
-                member, imgPathB).toUpdateConfirmPage().updateUser();
+    			// 更新
+    			memberDetailPage = memberDetailPage.toUserUpdatePage().setMemberInfo(
+    					member, imgPathB).toUpdateConfirmPage().updateUser();
 
-        // ユーザ情報更新後の証跡の取得
-        screenshot("registerAndUpdateUserTest_afterUpdate");
 
-        // アサート:ユーザ情報変更が完了したことを確認する。
-        memberDetailPage.getContent().shouldHave(text("ユーザ情報管理"));
+    			// ユーザ情報更新後の証跡の取得
+    			screenshot("registerAndUpdateUserTest_afterUpdate");
 
-        // アサート:変更前の電話番号ではないことを確認する。
-        memberDetailPage.getContent().shouldNotHave(text(oldTel));
+    			// アサート:ユーザ情報変更が完了したことを確認する。
+    			memberDetailPage.getContent().shouldHave(text("ユーザ情報管理"));
 
-        // アサート:変更後の電話番号であることを確認する。
-        memberDetailPage.getContent().shouldHave(text(newTel));
+    			// アサート:変更前の電話番号ではないことを確認する。
+    			memberDetailPage.getContent().shouldNotHave(text(oldTel));
+
+    			// アサート:変更後の電話番号であることを確認する。
+    			memberDetailPage.getContent().shouldHave(text(newTel));
+    			break;
+    		} catch (Exception e) {
+    			// エラー時はリトライ
+    		}
+    	}
     }
 }

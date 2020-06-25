@@ -44,18 +44,18 @@ database:
       name: default
   data-sources:
     - schema: default
-      dbInstanceIdentifier: atrs-ci-shard-1-1-x
+      dbInstanceIdentifier: atrs-master-12x
       driverUrlOption: socketTimeout=120&connectTimeout=120
       # replicaRegionはキー[database.rdsRegion]に設定した値と違う場合に設定する。
       #replicaRegion: us-east-1
     - schema: atrs1
-      url: jdbc:postgresql://atrs-ci-shard1-1-1-x.XXXX.ap-northeast-1.rds.amazonaws.com:5432/atrs?socketTimeout=120&connectTimeout=120
+      url: jdbc:postgresql://atrs-shard1-12x.c2vomi0qflnm.ap-northeast-1.rds.amazonaws.com:5432/atrs?socketTimeout=120&connectTimeout=120
     - schema: atrs2
-      url: jdbc:postgresql://atrs-ci-shard2-1-1-x.XXXX.ap-northeast-1.rds.amazonaws.com:5432/atrs?socketTimeout=120&connectTimeout=120
+      url: jdbc:postgresql://atrs-shard2-12x.c2vomi0qflnm.ap-northeast-1.rds.amazonaws.com:5432/atrs?socketTimeout=120&connectTimeout=120
 
 # upload directories
 upload:
-  bucketName: atrs.upload.private.ci
+  bucketName: atrs-temp/12x/ci/upload
   temporaryDirectory: tmp/
   saveDirectory: save/
 
@@ -85,14 +85,14 @@ spring:
 redis:
   session:
     cluster:
-      node1: atrs-ci.xxxx.clustercfg.apne1.cache.amazonaws.com:6379
+      node1: atrs-session-12x.s9bix8.clustercfg.apne1.cache.amazonaws.com:6379
     maxTotal: 8
     maxIdle: 8
     maxWaitMillis: -1
     minIdle: 0
   cache:
     cluster:
-      node1: atrs-ci-cache.xxxx.clustercfg.apne1.cache.amazonaws.com:6379
+      node1: atrs-dbcache-12x.s9bix8.clustercfg.apne1.cache.amazonaws.com:6379
     maxTotal: 8
     maxIdle: 8
     maxWaitMillis: -1

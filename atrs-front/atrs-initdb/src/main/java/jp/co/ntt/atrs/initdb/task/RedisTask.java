@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,17 +79,19 @@ public class RedisTask extends Task {
         if (!StringUtils.isEmpty(redisHost)) {
             flushDB(redisHost, Integer.valueOf(redisPort));
         } else {
-            String[] rcn = redisClusterNodes.split(",");
-            List<String> nodes = Arrays.asList(rcn);
-            RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(nodes);
-            JedisConnectionFactory factory = new JedisConnectionFactory(clusterConfiguration);
-            factory.afterPropertiesSet();
-            Iterator<RedisClusterNode> cnodes = factory.getClusterConnection()
-                    .clusterGetNodes().iterator();
-            while (cnodes.hasNext()) {
-                RedisClusterNode node = cnodes.next();
-                if (node.isMaster()) {
-                    flushDB(node.getHost(), node.getPort());
+            String[] rcns = redisClusterNodes.split(",");
+            for (String rcn : rcns) {
+                List<String> node = Arrays.asList(rcn);
+                RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(node);
+                JedisConnectionFactory factory = new JedisConnectionFactory(clusterConfiguration);
+                factory.afterPropertiesSet();
+                Iterator<RedisClusterNode> cnodes = factory
+                        .getClusterConnection().clusterGetNodes().iterator();
+                while (cnodes.hasNext()) {
+                    RedisClusterNode cnode = cnodes.next();
+                    if (cnode.isMaster()) {
+                        flushDB(cnode.getHost(), cnode.getPort());
+                    }
                 }
             }
         }

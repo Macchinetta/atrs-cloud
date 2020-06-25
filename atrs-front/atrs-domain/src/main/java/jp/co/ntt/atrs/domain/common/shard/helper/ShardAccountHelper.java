@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,37 +81,67 @@ public class ShardAccountHelper {
                 obj = arguments[0];
             } else {
                 // 引数が複数
-                ShardAccountParam shardAccountParam = null;
-                Parameter[] parameters = method.getParameters();
-                for (Parameter parameter : parameters) {
-                    // 引数からShardAccountParamアノテーションを取得
-                    shardAccountParam = AnnotationUtils.findAnnotation(
-                            parameter, ShardAccountParam.class);
-                    if (null != shardAccountParam) {
-                        // ShardAccountParamアノテーションが付与されている引数のオブジェクトを使用
-                        obj = arguments[argumentsLength];
-                        break;
-                    }
-                    argumentsLength++;
-                }
-                if (null == shardAccountParam && values.length > 1) {
-                    throw new IllegalArgumentException("メソッド引数が複数ありShardWithAccountアノテーションに値を設定した時に、"
-                            + "メソッド引数へShardAccountParamアノテーションの付与は必須です。");
-                }
+                obj = getObjectAtShardAccountParam(method, arguments, values);
             }
             if (null == obj) {
                 throw new IllegalArgumentException(String.format(
                         "第[ %d ]引数の値がNULLです。", (argumentsLength + 1)));
             }
             // 対象アカウント値を取得
-            if (values.length == 1) {
-                ret = obj.toString();
-            } else {
-                String exp = value.substring(value.indexOf(".") + 1);
-                ExpressionParser expressionParser = new SpelExpressionParser();
-                Expression expression = expressionParser.parseExpression(exp);
-                ret = expression.getValue(obj, String.class);
+            ret = getAccountAtShardWithAccount(value, values, obj);
+        }
+        return ret;
+    }
+
+    /**
+     * メソッド引数が複数ある場合、ShardAccountParamアノテーションが付与されている引数のオブジェクトを取得する
+     * @param method 実行対象のメソッド
+     * @param arguments 実行対象の引数
+     * @param splitValues valueを分割した属性値
+     * @return ShardAccountParamアノテーションが付与されている引数のオブジェクト
+     */
+    private Object getObjectAtShardAccountParam(Method method,
+            Object[] arguments, String[] splitValues) {
+        Object obj = null;
+
+        ShardAccountParam shardAccountParam = null;
+        Parameter[] parameters = method.getParameters();
+
+        for (int paramIdx = 0; paramIdx < parameters.length; paramIdx++) {
+            // 引数からShardAccountParamアノテーションを取得
+            shardAccountParam = AnnotationUtils.findAnnotation(
+                    parameters[paramIdx], ShardAccountParam.class);
+            if (null != shardAccountParam) {
+                // ShardAccountParamアノテーションが付与されている引数のオブジェクトを使用
+                obj = arguments[paramIdx];
+                break;
             }
+        }
+
+        if (null == shardAccountParam && splitValues.length > 1) {
+            throw new IllegalArgumentException("メソッド引数が複数ありShardWithAccountアノテーションに値を設定した時に、"
+                    + "メソッド引数へShardAccountParamアノテーションの付与は必須です。");
+        }
+        return obj;
+    }
+
+    /**
+     * 対象アカウント値を取得
+     * @param value ShardWithAccountアノテーションの属性valueの値
+     * @param splitValues valueを分割した属性値
+     * @param argument 実行対象の引数
+     * @return 対象アカウント値
+     */
+    private String getAccountAtShardWithAccount(String value,
+            String[] splitValues, Object argument) {
+        String ret = null;
+        if (splitValues.length == 1) {
+            ret = argument.toString();
+        } else {
+            String exp = value.substring(value.indexOf(".") + 1);
+            ExpressionParser expressionParser = new SpelExpressionParser();
+            Expression expression = expressionParser.parseExpression(exp);
+            ret = expression.getValue(argument, String.class);
         }
         return ret;
     }

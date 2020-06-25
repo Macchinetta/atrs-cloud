@@ -55,7 +55,7 @@ database:
 
 # upload directories
 upload:
-  bucketName: atrs.upload.private.dev
+  bucketName: atrs-temp/12x/dev/upload
   temporaryDirectory: tmp/
   saveDirectory: save/
 

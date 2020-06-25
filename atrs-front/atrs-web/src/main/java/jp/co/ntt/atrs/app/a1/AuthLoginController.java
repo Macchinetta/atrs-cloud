@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,20 @@
 package jp.co.ntt.atrs.app.a1;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * ログイン認証コントローラ。
  * @author NTT 電電太郎
  */
 @Controller
-@RequestMapping(value = "Auth/login")
 public class AuthLoginController {
 
     /**
      * ログイン画面を表示する。
      * @return View論理名
      */
-    @RequestMapping
+    @GetMapping("Auth/login")
     public String login() {
         return "A1/loginForm";
     }

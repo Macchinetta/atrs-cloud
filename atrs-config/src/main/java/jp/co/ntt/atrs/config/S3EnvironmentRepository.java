@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class S3EnvironmentRepository extends AbstractScmEnvironmentRepository
                                      implements EnvironmentRepository,
                                      SearchPathLocator, InitializingBean {
 
-    private static Log logger = LogFactory.getLog(
+    private static Log S3EnvironmentRepositoryLogger = LogFactory.getLog(
             S3EnvironmentRepository.class);
 
     public S3EnvironmentRepository(ConfigurableEnvironment environment) {
@@ -55,7 +55,8 @@ public class S3EnvironmentRepository extends AbstractScmEnvironmentRepository
             String bucketName = new AmazonS3URI(getUri()).getBucket();
             tm = TransferManagerBuilder.standard().withS3Client(amazonS3)
                     .build();
-            logger.info("local temp dir:" + getBasedir().getAbsolutePath());
+            S3EnvironmentRepositoryLogger.info("local temp dir:" + getBasedir()
+                    .getAbsolutePath());
             MultipleFileDownload download = tm.downloadDirectory(bucketName,
                     null, getBasedir());
             download.waitForCompletion();

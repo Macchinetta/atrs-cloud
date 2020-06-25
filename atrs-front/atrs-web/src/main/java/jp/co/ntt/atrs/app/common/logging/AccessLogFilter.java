@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,6 @@
  */
 package jp.co.ntt.atrs.app.common.logging;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
@@ -27,6 +23,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * アクセスログを出力するフィルタ。
@@ -94,7 +94,7 @@ public class AccessLogFilter extends OncePerRequestFilter {
         }
 
         String url = request.getRequestURL().toString();
-        if (url.indexOf("/resources/") > 0) {
+        if (url.indexOf("/resources/") >= 0) {
             return true;
         }
         return false;

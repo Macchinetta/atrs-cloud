@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 NTT Corporation.
+ * Copyright 2014-2020 NTT Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class RouteHelper {
      */
     @CacheEvict(key = "'route/' + #key")
     public void refresh(String key) {
-
+        // @CacheEvictによる該当キーのキャッシュ削除を行う。
     }
 
     /**

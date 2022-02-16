@@ -284,7 +284,7 @@
         <org.codehaus.mojo.version>2.5</org.codehaus.mojo.version>
         <org.codehaus.mojo.build-helper-maven-plugin.version>1.9.1</org.codehaus.mojo.build-helper-maven-plugin.version>
         <!-- == Dependency Versions == -->
-        <postgresql.version>42.2.9</postgresql.version>
+        <postgresql.version>42.3.3</postgresql.version>
         <org.springframework.cloud.spring-cloud-dependencies.version>Hoxton.SR3</org.springframework.cloud.spring-cloud-dependencies.version>
         <org.springframework.spring-jms.version>4.3.25.RELEASE</org.springframework.spring-jms.version>
         <com.amazonaws.amazon-sqs-java-messaging-lib.version>1.0.8</com.amazonaws.amazon-sqs-java-messaging-lib.version>
